@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espiritu Art Museum - Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #000;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        /* Museum Gallery */
+        .museum-gallery {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to bottom, #4a4a4a 0%, #2a2a2a 50%, #3a3a3a 100%);
+            overflow: hidden;
+        }
+
+        .gallery-viewport {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .gallery-world {
+            position: absolute;
+            width: 2400px;
+            height: 100vh;
+            /* Removed transition - let JavaScript handle movement directly */
+        }
+
+        /* Ceiling detail */
+        .museum-ceiling {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 30px;
+            background: #1a1a1a;
+            border-bottom: 4px solid #3a3a3a;
+        }
+
+        /* Floor */
+        .museum-floor {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50%;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    #5a4a3a 0px,
+                    #5a4a3a 80px,
+                    #4a3a2a 80px,
+                    #4a3a2a 160px
+                );
+            border-top: 4px solid #3a3a3a;
+        }
+
+        /* Art pieces */
+        .art-piece {
+            position: absolute;
+            border: 4px solid #8b6914;
+            background: #f5f5dc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .art-piece:hover {
+            transform: scale(1.05);
+            border-color: #ffeb3b;
+            box-shadow: 0 0 20px rgba(255, 235, 59, 0.8);
+        }
+
+        .art-piece img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Art piece positions - spread across the hall as portraits */
+        .art-left-1 {
+            left: 300px;
+            top: 15%;
+            width: 160px;
+            height: 200px;
+        }
+
+        .art-left-2 {
+            left: 800px;
+            top: 15%;
+            width: 160px;
+            height: 200px;
+        }
+
+        .art-right-1 {
+            right: 800px;
+            top: 15%;
+            width: 160px;
+            height: 200px;
+        }
+
+        .art-right-2 {
+            right: 300px;
+            top: 15%;
+            width: 160px;
+            height: 200px;
+        }
+
+        /* Spotlights above art */
+        .spotlight {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            background: radial-gradient(ellipse at center top, 
+                rgba(255, 255, 200, 0.8) 0%, 
+                rgba(255, 255, 200, 0.4) 30%,
+                rgba(255, 255, 200, 0.1) 60%,
+                transparent 100%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .spotlight-1 {
+            left: 340px;
+            top: 8%;
+        }
+
+        .spotlight-2 {
+            left: 840px;
+            top: 8%;
+        }
+
+        .spotlight-3 {
+            right: 840px;
+            top: 8%;
+        }
+
+        .spotlight-4 {
+            right: 340px;
+            top: 8%;
+        }
+
+        /* Plaques under art pieces */
+        .plaque {
+            position: absolute;
+            background: #8B7355;
+            border: 2px solid #654321;
+            padding: 8px 12px;
+            font-size: 0.5rem;
+            color: #F5F5DC;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+            width: 180px;
+            pointer-events: none;
+        }
+
+        .plaque-title {
+            font-weight: bold;
+            margin-bottom: 2px;
+            letter-spacing: 1px;
+        }
+
+        .plaque-artist {
+            font-size: 0.4rem;
+            font-style: italic;
+            color: #D4C5B0;
+        }
+
+        .plaque-1 {
+            left: 290px;
+            top: 45%;
+        }
+
+        .plaque-2 {
+            left: 790px;
+            top: 45%;
+        }
+
+        .plaque-3 {
+            right: 790px;
+            top: 45%;
+        }
+
+        .plaque-4 {
+            right: 290px;
+            top: 45%;
+        }
+
+        /* Museum furnishings */
+        .bench {
+            position: absolute;
+            width: 120px;
+            height: 50px;
+            background: #8B4513;
+            border: 3px solid #654321;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            bottom: 30%;
+        }
+
+        .bench::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10px;
+            right: 10px;
+            height: 10px;
+            background: #654321;
+        }
+
+        .bench-1 {
+            left: 550px;
+        }
+
+        .bench-2 {
+            left: 1100px;
+        }
+
+        .bench-3 {
+            right: 550px;
+        }
+
+        /* Potted plants */
+        .plant {
+            position: absolute;
+            bottom: 35%;
+            width: 40px;
+            height: 60px;
+        }
+
+        .plant-pot {
+            position: absolute;
+            bottom: 0;
+            left: 5px;
+            width: 30px;
+            height: 25px;
+            background: #8B4513;
+            border: 2px solid #654321;
+        }
+
+        .plant-leaves {
+            position: absolute;
+            bottom: 20px;
+            left: 10px;
+            width: 20px;
+            height: 30px;
+            background: #228B22;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .plant-leaves::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 5px;
+            width: 15px;
+            height: 20px;
+            background: #2F4F2F;
+            border-radius: 50% 0 0 50%;
+        }
+
+        .plant-leaves::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 5px;
+            width: 15px;
+            height: 20px;
+            background: #2F4F2F;
+            border-radius: 0 50% 50% 0;
+        }
+
+        .plant-1 {
+            left: 200px;
+        }
+
+        .plant-2 {
+            left: 1000px;
+        }
+
+        .plant-3 {
+            right: 200px;
+        }
+
+        /* Wall sconces */
+        .sconce {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            top: 10%;
+        }
+
+        .sconce-bracket {
+            position: absolute;
+            bottom: 0;
+            left: 10px;
+            width: 10px;
+            height: 30px;
+            background: #DAA520;
+            border: 1px solid #B8860B;
+        }
+
+        .sconce-light {
+            position: absolute;
+            top: 0;
+            left: 5px;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #FFFACD 0%, #FFD700 50%, #DAA520 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .sconce-1 {
+            left: 150px;
+        }
+
+        .sconce-2 {
+            left: 650px;
+        }
+
+        .sconce-3 {
+            right: 650px;
+        }
+
+        .sconce-4 {
+            right: 150px;
+        }
+
+        /* Velvet ropes in front of art */
+        .rope-barrier {
+            position: absolute;
+            height: 3px;
+            background: linear-gradient(to right, 
+                #8B0000 0%, 
+                #DC143C 50%, 
+                #8B0000 100%);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            bottom: 42%;
+        }
+
+        .rope-post {
+            position: absolute;
+            width: 8px;
+            height: 60px;
+            background: linear-gradient(to bottom, #DAA520 0%, #B8860B 100%);
+            border: 1px solid #8B6914;
+            bottom: 40%;
+        }
+
+        .rope-post-top {
+            position: absolute;
+            top: -6px;
+            left: -4px;
+            width: 16px;
+            height: 12px;
+            background: #FFD700;
+            border-radius: 50%;
+            border: 1px solid #DAA520;
+        }
+
+        .barrier-1-left { left: 260px; }
+        .barrier-1-right { left: 480px; }
+        .barrier-1-rope { left: 268px; width: 212px; }
+
+        .barrier-2-left { left: 760px; }
+        .barrier-2-right { left: 980px; }
+        .barrier-2-rope { left: 768px; width: 212px; }
+
+        .barrier-3-left { right: 980px; }
+        .barrier-3-right { right: 760px; }
+        .barrier-3-rope { right: 768px; width: 212px; }
+
+        .barrier-4-left { right: 480px; }
+        .barrier-4-right { right: 260px; }
+        .barrier-4-rope { right: 268px; width: 212px; }
+
+        /* Player sprite in museum */
+        .player-sprite {
+            position: fixed;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            z-index: 1000;
+        }
+
+        /* Controls hint */
+        .controls-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            padding: 10px 20px;
+            border: 2px solid #4a9eff;
+            font-size: 0.6rem;
+            z-index: 999;
+        }
+
+        /* Info modal */
+        .art-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 4px solid #4a9eff;
+            padding: 30px;
+            z-index: 1001;
+            max-width: 500px;
+            box-shadow: 0 0 40px rgba(74, 158, 255, 0.8);
+        }
+
+        .art-modal.active {
+            display: block;
+        }
+
+        .art-modal h2 {
+            color: #ffeb3b;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .art-modal p {
+            color: #ffffff;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: #4a9eff;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            background: #ffeb3b;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Museum Gallery -->
+    <div class="museum-gallery">
+        <div class="gallery-viewport">
+            <div class="gallery-world" id="gallery-world">
+                <div class="museum-ceiling"></div>
+                <div class="museum-floor"></div>
+                
+                <!-- Spotlights -->
+                <div class="spotlight spotlight-1"></div>
+                <div class="spotlight spotlight-2"></div>
+                <div class="spotlight spotlight-3"></div>
+                <div class="spotlight spotlight-4"></div>
+                
+                <!-- Wall Sconces -->
+                <div class="sconce sconce-1">
+                    <div class="sconce-light"></div>
+                    <div class="sconce-bracket"></div>
+                </div>
+                <div class="sconce sconce-2">
+                    <div class="sconce-light"></div>
+                    <div class="sconce-bracket"></div>
+                </div>
+                <div class="sconce sconce-3">
+                    <div class="sconce-light"></div>
+                    <div class="sconce-bracket"></div>
+                </div>
+                <div class="sconce sconce-4">
+                    <div class="sconce-light"></div>
+                    <div class="sconce-bracket"></div>
+                </div>
+                
+                <!-- Art pieces -->
+                <div class="art-piece art-left-1" data-art="1">
+                    <img src="../AndreiEspiritu/Images/20181123_230312.jpg" alt="Art Piece 1">
+                </div>
+                <div class="art-piece art-left-2" data-art="2">
+                    <img src="../AndreiEspiritu/Images/20230926_135728.jpg" alt="Art Piece 2">
+                </div>
+                <div class="art-piece art-right-1" data-art="3">
+                    <img src="../AndreiEspiritu/Images/20240426_110619.jpg" alt="Art Piece 3">
+                </div>
+                <div class="art-piece art-right-2" data-art="4">
+                    <img src="../AndreiEspiritu/Images/unnamed.jpg" alt="Art Piece 4">
+                </div>
+                
+                <!-- Plaques -->
+                <div class="plaque plaque-1">
+                    <div class="plaque-title">Mr. Buck</div>
+                    <div class="plaque-artist">Andrei Espiritu</div>
+                </div>
+                <div class="plaque plaque-2">
+                    <div class="plaque-title">Exploding Cubes</div>
+                    <div class="plaque-artist">Andrei Espiritu</div>
+                </div>
+                <div class="plaque plaque-3">
+                    <div class="plaque-title">In His Image, Regardless</div>
+                    <div class="plaque-artist">Andrei Espiritu</div>
+                </div>
+                <div class="plaque plaque-4">
+                    <div class="plaque-title">990-1350</div>
+                    <div class="plaque-artist">Andrei Espiritu</div>
+                </div>
+                
+                <!-- Velvet rope barriers -->
+                <div class="rope-post barrier-1-left">
+                    <div class="rope-post-top"></div>
+                </div>
+                <div class="rope-post barrier-1-right">
+                    <div class="rope-post-top"></div>
+                </div>
+                <div class="rope-barrier barrier-1-rope"></div>
+                
+                <div class="rope-post barrier-2-left">
+                    <div class="rope-post-top"></div>
+                </div>
+                <div class="rope-post barrier-2-right">
+                    <div class="rope-post-top"></div>
+                </div>
+                <div class="rope-barrier barrier-2-rope"></div>
+                
+                <div class="rope-post barrier-3-left">
+                    <div class="rope-post-top"></div>
+                </div>
+                <div class="rope-post barrier-3-right">
+                    <div class="rope-post-top"></div>
+                </div>
+                <div class="rope-barrier barrier-3-rope"></div>
+                
+                <div class="rope-post barrier-4-left">
+                    <div class="rope-post-top"></div>
+                </div>
+                <div class="rope-post barrier-4-right">
+                    <div class="rope-post-top"></div>
+                </div>
+                <div class="rope-barrier barrier-4-rope"></div>
+                
+                <!-- Benches -->
+                <div class="bench bench-1"></div>
+                <div class="bench bench-2"></div>
+                <div class="bench bench-3"></div>
+                
+                <!-- Potted Plants -->
+                <div class="plant plant-1">
+                    <div class="plant-leaves"></div>
+                    <div class="plant-pot"></div>
+                </div>
+                <div class="plant plant-2">
+                    <div class="plant-leaves"></div>
+                    <div class="plant-pot"></div>
+                </div>
+                <div class="plant plant-3">
+                    <div class="plant-leaves"></div>
+                    <div class="plant-pot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player sprite -->
+        <canvas class="player-sprite" id="player-sprite" width="80" height="80"></canvas>
+        
+        <!-- UI Elements -->
+        <div class="controls-hint">WASD or Arrow Keys to Move | Click Art to View | ESC to Close</div>
+    </div>
+
+    <!-- Art Info Modal -->
+    <div class="art-modal" id="art-modal">
+        <h2 id="modal-title"></h2>
+        <p id="modal-description"></p>
+        <button class="close-modal">CLOSE</button>
+    </div>
+
+    <script>
+        // Get selected character from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedCharacter = urlParams.get('character') || 'cat';
+
+        // Player position and movement
+        let playerX = 300; // Start near the left side
+        let playerSpeed = 5;
+        let cameraOffset = 0;
+        const keys = {};
+        let isModalOpen = false;
+        const worldWidth = 2400;
+        const playerMargin = 100; // Margin from edges
+        let facingRight = true; // Track which direction player is facing
+
+        // Draw detailed pixel art cat sprite
+        function drawCat(ctx, x, y, size, flipHorizontal = false) {
+            const p = size / 20; // pixel unit - more pixels for detail
+            
+            ctx.save();
+            if (flipHorizontal) {
+                ctx.translate(x + size, y);
+                ctx.scale(-1, 1);
+                x = 0;
+                y = 0;
+            }
+            
+            // Main body - Orange
+            ctx.fillStyle = '#FF8844';
+            // Body
+            ctx.fillRect(x + p * 5, y + p * 10, p * 10, p * 7);
+            // Head (round)
+            ctx.fillRect(x + p * 11, y + p * 5, p * 6, p * 6);
+            // Head top
+            ctx.fillRect(x + p * 12, y + p * 4, p * 4, p);
+            
+            // Tail - curved upward
+            ctx.fillRect(x + p * 3, y + p * 10, p * 2, p * 5);
+            ctx.fillRect(x + p * 2, y + p * 8, p * 2, p * 2);
+            ctx.fillRect(x + p * 3, y + p * 7, p * 2, p);
+            
+            // Legs - Orange
+            ctx.fillRect(x + p * 6, y + p * 17, p * 2, p * 3);
+            ctx.fillRect(x + p * 11, y + p * 17, p * 2, p * 3);
+            
+            // Pointed ears - Orange (triangular)
+            ctx.fillRect(x + p * 11, y + p * 3, p * 2, p * 2);
+            ctx.fillRect(x + p * 12, y + p * 2, p, p);
+            ctx.fillRect(x + p * 15, y + p * 3, p * 2, p * 2);
+            ctx.fillRect(x + p * 15, y + p * 2, p, p);
+            
+            // Inner ears - Pink
+            ctx.fillStyle = '#FFB6C1';
+            ctx.fillRect(x + p * 12, y + p * 3, p, p);
+            ctx.fillRect(x + p * 15, y + p * 3, p, p);
+            
+            // Belly/chest - Cream
+            ctx.fillStyle = '#FFF4E6';
+            ctx.fillRect(x + p * 8, y + p * 11, p * 5, p * 5);
+            
+            // Face markings - White
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(x + p * 12, y + p * 7, p * 4, p * 3);
+            ctx.fillRect(x + p * 13, y + p * 6, p * 2, p);
+            
+            // Eyes - Green with pupils
+            ctx.fillStyle = '#55DD55';
+            ctx.fillRect(x + p * 13, y + p * 6, p, p * 2);
+            ctx.fillRect(x + p * 15, y + p * 6, p, p * 2);
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + p * 13, y + p * 7, p, p);
+            ctx.fillRect(x + p * 15, y + p * 7, p, p);
+            
+            // Nose - Pink triangle
+            ctx.fillStyle = '#FF69B4';
+            ctx.fillRect(x + p * 14, y + p * 8, p, p);
+            ctx.fillRect(x + p * 13.5, y + p * 9, p * 2, p);
+            
+            // Mouth/whisker area
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + p * 13, y + p * 9, p, p);
+            ctx.fillRect(x + p * 15, y + p * 9, p, p);
+            
+            // Whiskers - Black
+            ctx.fillRect(x + p * 10, y + p * 7, p * 2, p);
+            ctx.fillRect(x + p * 10, y + p * 8, p * 2, p);
+            ctx.fillRect(x + p * 17, y + p * 7, p * 2, p);
+            ctx.fillRect(x + p * 17, y + p * 8, p * 2, p);
+            
+            // Paws - White
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(x + p * 6, y + p * 19, p * 2, p);
+            ctx.fillRect(x + p * 11, y + p * 19, p * 2, p);
+            
+            // Tail tip - White
+            ctx.fillRect(x + p * 2, y + p * 7, p * 2, p);
+            
+            ctx.restore();
+        }
+
+        // Draw detailed pixel art dog sprite
+        function drawDog(ctx, x, y, size, flipHorizontal = false) {
+            const p = size / 20; // pixel unit - more pixels for detail
+            
+            ctx.save();
+            if (flipHorizontal) {
+                ctx.translate(x + size, y);
+                ctx.scale(-1, 1);
+                x = 0;
+                y = 0;
+            }
+            
+            // Main body - Brown
+            ctx.fillStyle = '#8B5A3C';
+            // Body
+            ctx.fillRect(x + p * 5, y + p * 10, p * 10, p * 7);
+            // Head/neck
+            ctx.fillRect(x + p * 10, y + p * 7, p * 6, p * 4);
+            // Snout extended
+            ctx.fillRect(x + p * 14, y + p * 8, p * 4, p * 3);
+            ctx.fillRect(x + p * 16, y + p * 7, p * 2, p);
+            
+            // Tail - wagging up
+            ctx.fillRect(x + p * 3, y + p * 9, p * 2, p * 6);
+            ctx.fillRect(x + p * 2, y + p * 6, p * 2, p * 3);
+            ctx.fillRect(x + p * 3, y + p * 5, p * 2, p);
+            
+            // Legs - Brown
+            ctx.fillRect(x + p * 6, y + p * 17, p * 2, p * 3);
+            ctx.fillRect(x + p * 11, y + p * 17, p * 2, p * 3);
+            
+            // Floppy ear - Brown (hanging down)
+            ctx.fillRect(x + p * 10, y + p * 6, p * 2, p * 6);
+            ctx.fillRect(x + p * 9, y + p * 10, p * 2, p * 2);
+            
+            // Standing ear - Brown
+            ctx.fillRect(x + p * 14, y + p * 5, p * 2, p * 3);
+            ctx.fillRect(x + p * 14, y + p * 4, p, p);
+            
+            // Chest/belly - Tan
+            ctx.fillStyle = '#D4AF7A';
+            ctx.fillRect(x + p * 8, y + p * 12, p * 5, p * 4);
+            
+            // Snout lighter area
+            ctx.fillStyle = '#B8956A';
+            ctx.fillRect(x + p * 14, y + p * 9, p * 3, p * 2);
+            
+            // Eyes - Brown/black with shine
+            ctx.fillStyle = '#3E2723';
+            ctx.fillRect(x + p * 12, y + p * 8, p * 2, p * 2);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(x + p * 12, y + p * 8, p, p);
+            
+            // Nose - Black shiny
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + p * 17, y + p * 8, p * 2, p * 2);
+            ctx.fillStyle = '#666666';
+            ctx.fillRect(x + p * 17, y + p * 8, p, p);
+            
+            // Mouth - curved smile
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + p * 16, y + p * 10, p, p);
+            ctx.fillRect(x + p * 17, y + p * 10, p, p);
+            
+            // Tongue - Pink (hanging)
+            ctx.fillStyle = '#FF6B9D';
+            ctx.fillRect(x + p * 16, y + p * 10, p * 2, p * 2);
+            
+            // Paws - Dark brown
+            ctx.fillStyle = '#5C3D2E';
+            ctx.fillRect(x + p * 6, y + p * 19, p * 2, p);
+            ctx.fillRect(x + p * 11, y + p * 19, p * 2, p);
+            
+            // Collar - Red with buckle
+            ctx.fillStyle = '#DD2222';
+            ctx.fillRect(x + p * 10, y + p * 10, p * 5, p * 2);
+            ctx.fillStyle = '#FFD700';
+            ctx.fillRect(x + p * 12, y + p * 10.5, p, p);
+            
+            // Tail tip - lighter
+            ctx.fillStyle = '#A67C52';
+            ctx.fillRect(x + p * 3, y + p * 5, p * 2, p);
+            
+            ctx.restore();
+        }
+
+
+        // Art information
+        const artInfo = {
+            '1': {
+                title: 'Mr. Buck',
+                description: 'Bonus: My pet rabbit, the late Mr. Buck. May he rest in peace.'
+            },
+            '2': {
+                title: 'Exploding Cubes',
+                description: 'In the subject of motion, I chose to make this poor, innocent rubix cube explode. I captured its motion by replicating the shattering with wooden blocks and black wire. A huge pain to clean up, as well as any repeated attempts to replicate it'
+            },
+            '3': {
+                title: 'In His Image, Regardless',
+                description: 'A medal symbolizing our flaws. The piece depicts a broken, shattered mirror, reflecting anyone who looks at it, while tender, gentle hands hold and caress the medal. It shows that despite our inperfectios, we are still loved and care for. A piece dedicated to my late grandfather, Adorable Martinez'
+            },
+            '4': {
+                title: '990-1350',
+                description: 'A piece symbolizing memory from sounds. The subject of this image is that of memories being triggered via sounds or voices. Many do not realize just how influential sound is to our memories and how often we recognize things through them.'
+            }
+        };
+
+        // Initialize player sprite
+        function initPlayerSprite() {
+            updatePlayerSprite();
+        }
+
+        // Update player sprite with current direction
+        function updatePlayerSprite() {
+            const playerCanvas = document.getElementById('player-sprite');
+            const playerCtx = playerCanvas.getContext('2d');
+            playerCtx.clearRect(0, 0, 80, 80);
+            
+            if (selectedCharacter === 'cat') {
+                drawCat(playerCtx, 0, 0, 80, !facingRight);
+            } else {
+                drawDog(playerCtx, 0, 0, 80, !facingRight);
+            }
+        }
+
+        // Handle keyboard input
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('art-modal').classList.remove('active');
+                isModalOpen = false;
+                return;
+            }
+            
+            if (isModalOpen) return;
+            
+            // Store both the original key and lowercase version
+            keys[e.key] = true;
+            keys[e.key.toLowerCase()] = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+            keys[e.key.toLowerCase()] = false;
+        });
+
+        // Game loop for movement
+        function gameLoop() {
+            if (!isModalOpen) {
+                // Allow player to move across the entire world with small margins
+                const minX = playerMargin;
+                const maxX = worldWidth - playerMargin;
+                let moved = false;
+                
+                // Handle movement - check both uppercase and lowercase arrow keys
+                if (keys['a'] || keys['arrowleft'] || keys['A'] || keys['ArrowLeft']) {
+                    playerX = Math.max(minX, playerX - playerSpeed);
+                    if (facingRight) {
+                        facingRight = false;
+                        updatePlayerSprite();
+                    }
+                    moved = true;
+                }
+                if (keys['d'] || keys['arrowright'] || keys['D'] || keys['ArrowRight']) {
+                    playerX = Math.min(maxX, playerX + playerSpeed);
+                    if (!facingRight) {
+                        facingRight = true;
+                        updatePlayerSprite();
+                    }
+                    moved = true;
+                }
+
+                // Always update camera
+                updateCamera();
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Update camera position
+        function updateCamera() {
+            const galleryWorld = document.getElementById('gallery-world');
+            const viewportWidth = window.innerWidth;
+            
+            // Center camera on player
+            cameraOffset = playerX - viewportWidth / 2;
+            
+            // Clamp camera to world bounds
+            cameraOffset = Math.max(0, Math.min(worldWidth - viewportWidth, cameraOffset));
+            
+            galleryWorld.style.transform = `translateX(-${cameraOffset}px)`;
+        }
+
+        // Art piece click interactions
+        document.querySelectorAll('.art-piece').forEach(piece => {
+            piece.addEventListener('click', () => {
+                const artId = piece.dataset.art;
+                const info = artInfo[artId];
+                
+                document.getElementById('modal-title').textContent = info.title;
+                document.getElementById('modal-description').textContent = info.description;
+                document.getElementById('art-modal').classList.add('active');
+                isModalOpen = true;
+            });
+        });
+
+        // Close modal
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('art-modal').classList.remove('active');
+            isModalOpen = false;
+        });
+
+        // Initialize everything on load
+        window.addEventListener('load', () => {
+            initPlayerSprite();
+            gameLoop();
+        });
+    </script>
+</body>
+</html>
+

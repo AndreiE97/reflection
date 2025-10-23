@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espiritu Art Museum</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(to bottom, #0a0e27 0%, #1a1a3e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated stars background */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 60px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 50px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 10px, #eee, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.5;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 1;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 4px solid #4a9eff;
+            box-shadow: 
+                0 0 20px rgba(74, 158, 255, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            position: relative;
+        }
+
+        /* Decorative corners */
+        .container::before,
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #4a9eff;
+        }
+
+        .container::before {
+            top: -4px;
+            left: -4px;
+            border-right: 4px solid #0a0e27;
+            border-bottom: 4px solid #0a0e27;
+        }
+
+        .container::after {
+            top: -4px;
+            right: -4px;
+            border-left: 4px solid #0a0e27;
+            border-bottom: 4px solid #0a0e27;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #ffeb3b;
+            text-shadow: 
+                4px 4px 0px #ff6b6b,
+                -2px -2px 0px #4a9eff;
+            margin-bottom: 60px;
+            letter-spacing: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .menu-item {
+            width: 400px;
+            padding: 20px 40px;
+            background: linear-gradient(to right, #1a1a3e 0%, #2d2d5f 50%, #1a1a3e 100%);
+            border: 3px solid #4a9eff;
+            color: #ffffff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: block;
+            box-shadow: 0 4px 0 #2a5a9f;
+        }
+
+        .menu-item::before {
+            content: '▶';
+            position: absolute;
+            left: 20px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            color: #ffeb3b;
+            animation: blink 1s step-start infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(to right, #2d2d5f 0%, #4a4a8f 50%, #2d2d5f 100%);
+            border-color: #ffeb3b;
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 0 #2a5a9f,
+                0 0 20px rgba(255, 235, 59, 0.5);
+        }
+
+        .menu-item:hover::before {
+            opacity: 1;
+        }
+
+        .menu-item:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #2a5a9f;
+        }
+
+        /* Pixel art border animation */
+        @keyframes borderGlow {
+            0%, 100% { border-color: #4a9eff; }
+            50% { border-color: #6bbaff; }
+        }
+
+        .container {
+            animation: borderGlow 2s ease-in-out infinite;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.5rem;
+            }
+
+            .menu-item {
+                width: 300px;
+                font-size: 1rem;
+                padding: 15px 30px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1rem;
+                margin-bottom: 40px;
+            }
+
+            .menu-item {
+                width: 250px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Character Selection Screen */
+        .character-selection {
+            display: none;
+            text-align: center;
+        }
+
+        .character-selection.active {
+            display: block;
+        }
+
+        .character-title {
+            font-size: 1.8rem;
+            color: #ffeb3b;
+            text-shadow: 
+                3px 3px 0px #ff6b6b,
+                -2px -2px 0px #4a9eff;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .character-options {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 40px;
+        }
+
+        .character-option {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 20px;
+            border: 3px solid transparent;
+        }
+
+        .character-option:hover {
+            border-color: #ffeb3b;
+            transform: scale(1.1);
+            background: rgba(255, 235, 59, 0.1);
+        }
+
+        .sprite-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .sprite {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .character-label {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Main Menu -->
+    <div class="container" id="main-menu">
+        <h1 class="title">ESPIRITU<br>ART MUSEUM</h1>
+        <nav class="menu">
+            <a href="#new-game" class="menu-item" id="new-game-btn">NEW GAME</a>
+            <a href="#continue" class="menu-item">CONTINUE</a>
+            <a href="#exit" class="menu-item">EXIT</a>
+        </nav>
+    </div>
+
+    <!-- Character Selection -->
+    <div class="container character-selection" id="character-selection">
+        <h2 class="character-title">SELECT YOUR<br>CHARACTER</h2>
+        <div class="character-options">
+            <div class="character-option" data-character="cat">
+                <div class="sprite-container">
+                    <canvas class="sprite" id="cat-sprite" width="150" height="150"></canvas>
+                </div>
+                <div class="character-label">CAT</div>
+            </div>
+            <div class="character-option" data-character="dog">
+                <div class="sprite-container">
+                    <canvas class="sprite" id="dog-sprite" width="150" height="150"></canvas>
+                </div>
+                <div class="character-label">DOG</div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Game state
+        let selectedCharacter = null;
+
+        // Screen management
+        function showScreen(screenId) {
+            document.getElementById('main-menu').classList.remove('active');
+            document.getElementById('character-selection').classList.remove('active');
+            
+            const screen = document.getElementById(screenId);
+            if (screen) {
+                screen.classList.add('active');
+            }
+        }
+
+        // Draw detailed pixel art cat sprite
+        function drawCat(ctx, x, y, size, flipHorizontal = false) {
+            const p = size / 20; // pixel unit - more pixels for detail
+            
+            ctx.save();
+            if (flipHorizontal) {
+                ctx.translate(x + size, y);
+                ctx.scale(-1, 1);
+                x = 0;
+                y = 0;
+            }
+            
+            // Main body - Orange
+            ctx.fillStyle = '#FF8844';
+            // Body
+            ctx.fillRect(x + p * 5, y + p * 10, p * 10, p * 7);
+            // Head (round)
+            ctx.fillRect(x + p * 11, y + p * 5, p * 6, p * 6);
+            // Head top
+            ctx.fillRect(x + p * 12, y + p * 4, p * 4, p);
+            
+            // Tail - curved upward
+            ctx.fillRect(x + p * 3, y + p * 10, p * 2, p * 5);
+            ctx.fillRect(x + p * 2, y + p * 8, p * 2, p * 2);
+            ctx.fillRect(x + p * 3, y + p * 7, p * 2, p);
+            
+            // Legs - Orange
+            ctx.fillRect(x + p * 6, y + p * 17, p * 2, p * 3);
+            ctx.fillRect(x + p * 11, y + p * 17, p * 2, p * 3);
+            
+            // Pointed ears - Orange (triangular)
+            ctx.fillRect(x + p * 11, y + p * 3, p * 2, p * 2);
+            ctx.fillRect(x + p * 12, y + p * 2, p, p);
+            ctx.fillRect(x + p * 15, y + p * 3, p * 2, p * 2);
+            ctx.fillRect(x + p * 15, y + p * 2, p, p);
+            
+            // Inner ears - Pink
+            ctx.fillStyle = '#FFB6C1';
+            ctx.fillRect(x + p * 12, y + p * 3, p, p);
+            ctx.fillRect(x + p * 15, y + p * 3, p, p);
+            
+            // Belly/chest - Cream
+            ctx.fillStyle = '#FFF4E6';
+            ctx.fillRect(x + p * 8, y + p * 11, p * 5, p * 5);
+            
+            // Face markings - White
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(x + p * 12, y + p * 7, p * 4, p * 3);
+            ctx.fillRect(x + p * 13, y + p * 6, p * 2, p);
+            
+            // Eyes - Green with pupils
+            ctx.fillStyle = '#55DD55';
+            ctx.fillRect(x + p * 13, y + p * 6, p, p * 2);
+            ctx.fillRect(x + p * 15, y + p * 6, p, p * 2);
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + p * 13, y + p * 7, p, p);
+            ctx.fillRect(x + p * 15, y + p * 7, p, p);
+            
+            // Nose - Pink triangle
+            ctx.fillStyle = '#FF69B4';
+            ctx.fillRect(x + p * 14, y + p * 8, p, p);
+            ctx.fillRect(x + p * 13.5, y + p * 9, p * 2, p);
+            
+            // Mouth/whisker area
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + p * 13, y + p * 9, p, p);
+            ctx.fillRect(x + p * 15, y + p * 9, p, p);
+            
+            // Whiskers - Black
+            ctx.fillRect(x + p * 10, y + p * 7, p * 2, p);
+            ctx.fillRect(x + p * 10, y + p * 8, p * 2, p);
+            ctx.fillRect(x + p * 17, y + p * 7, p * 2, p);
+            ctx.fillRect(x + p * 17, y + p * 8, p * 2, p);
+            
+            // Paws - White
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(x + p * 6, y + p * 19, p * 2, p);
+            ctx.fillRect(x + p * 11, y + p * 19, p * 2, p);
+            
+            // Tail tip - White
+            ctx.fillRect(x + p * 2, y + p * 7, p * 2, p);
+            
+            ctx.restore();
+        }
+
+        // Draw detailed pixel art dog sprite
+        function drawDog(ctx, x, y, size, flipHorizontal = false) {
+            const p = size / 20; // pixel unit - more pixels for detail
+            
+            ctx.save();
+            if (flipHorizontal) {
+                ctx.translate(x + size, y);
+                ctx.scale(-1, 1);
+                x = 0;
+                y = 0;
+            }
+            
+            // Main body - Brown
+            ctx.fillStyle = '#8B5A3C';
+            // Body
+            ctx.fillRect(x + p * 5, y + p * 10, p * 10, p * 7);
+            // Head/neck
+            ctx.fillRect(x + p * 10, y + p * 7, p * 6, p * 4);
+            // Snout extended
+            ctx.fillRect(x + p * 14, y + p * 8, p * 4, p * 3);
+            ctx.fillRect(x + p * 16, y + p * 7, p * 2, p);
+            
+            // Tail - wagging up
+            ctx.fillRect(x + p * 3, y + p * 9, p * 2, p * 6);
+            ctx.fillRect(x + p * 2, y + p * 6, p * 2, p * 3);
+            ctx.fillRect(x + p * 3, y + p * 5, p * 2, p);
+            
+            // Legs - Brown
+            ctx.fillRect(x + p * 6, y + p * 17, p * 2, p * 3);
+            ctx.fillRect(x + p * 11, y + p * 17, p * 2, p * 3);
+            
+            // Floppy ear - Brown (hanging down)
+            ctx.fillRect(x + p * 10, y + p * 6, p * 2, p * 6);
+            ctx.fillRect(x + p * 9, y + p * 10, p * 2, p * 2);
+            
+            // Standing ear - Brown
+            ctx.fillRect(x + p * 14, y + p * 5, p * 2, p * 3);
+            ctx.fillRect(x + p * 14, y + p * 4, p, p);
+            
+            // Chest/belly - Tan
+            ctx.fillStyle = '#D4AF7A';
+            ctx.fillRect(x + p * 8, y + p * 12, p * 5, p * 4);
+            
+            // Snout lighter area
+            ctx.fillStyle = '#B8956A';
+            ctx.fillRect(x + p * 14, y + p * 9, p * 3, p * 2);
+            
+            // Eyes - Brown/black with shine
+            ctx.fillStyle = '#3E2723';
+            ctx.fillRect(x + p * 12, y + p * 8, p * 2, p * 2);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(x + p * 12, y + p * 8, p, p);
+            
+            // Nose - Black shiny
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + p * 17, y + p * 8, p * 2, p * 2);
+            ctx.fillStyle = '#666666';
+            ctx.fillRect(x + p * 17, y + p * 8, p, p);
+            
+            // Mouth - curved smile
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + p * 16, y + p * 10, p, p);
+            ctx.fillRect(x + p * 17, y + p * 10, p, p);
+            
+            // Tongue - Pink (hanging)
+            ctx.fillStyle = '#FF6B9D';
+            ctx.fillRect(x + p * 16, y + p * 10, p * 2, p * 2);
+            
+            // Paws - Dark brown
+            ctx.fillStyle = '#5C3D2E';
+            ctx.fillRect(x + p * 6, y + p * 19, p * 2, p);
+            ctx.fillRect(x + p * 11, y + p * 19, p * 2, p);
+            
+            // Collar - Red with buckle
+            ctx.fillStyle = '#DD2222';
+            ctx.fillRect(x + p * 10, y + p * 10, p * 5, p * 2);
+            ctx.fillStyle = '#FFD700';
+            ctx.fillRect(x + p * 12, y + p * 10.5, p, p);
+            
+            // Tail tip - lighter
+            ctx.fillStyle = '#A67C52';
+            ctx.fillRect(x + p * 3, y + p * 5, p * 2, p);
+            
+            ctx.restore();
+        }
+
+        // Initialize character sprites
+        function initCharacterSprites() {
+            const catCanvas = document.getElementById('cat-sprite');
+            const dogCanvas = document.getElementById('dog-sprite');
+            
+            const catCtx = catCanvas.getContext('2d');
+            const dogCtx = dogCanvas.getContext('2d');
+            
+            catCtx.clearRect(0, 0, 150, 150);
+            dogCtx.clearRect(0, 0, 150, 150);
+            
+            drawCat(catCtx, 25, 25, 100, false);
+            drawDog(dogCtx, 25, 25, 100, false);
+        }
+
+        // Main menu navigation
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        document.getElementById('new-game-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            showScreen('character-selection');
+        });
+
+        menuItems.forEach(item => {
+            if (item.id !== 'new-game-btn') {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const selection = item.textContent.trim();
+                    
+                    item.style.background = '#ffeb3b';
+                    item.style.color = '#000';
+                    
+                    setTimeout(() => {
+                        item.style.background = '';
+                        item.style.color = '';
+                        alert(`${selection} feature coming soon!`);
+                    }, 150);
+                });
+            }
+        });
+
+        // Character selection
+        document.querySelectorAll('.character-option').forEach(option => {
+            option.addEventListener('click', () => {
+                selectedCharacter = option.dataset.character;
+                
+                // Flash effect
+                option.style.background = '#ffeb3b';
+                setTimeout(() => {
+                    option.style.background = '';
+                    // Navigate to gallery page with character parameter
+                    window.location.href = `gallery.html?character=${selectedCharacter}`;
+                }, 300);
+            });
+        });
+
+
+        // Keyboard navigation for main menu
+        let selectedIndex = 0;
+        
+        document.addEventListener('keydown', (e) => {
+            const currentScreen = document.querySelector('.container.active');
+            if (!currentScreen || currentScreen.id !== 'main-menu') return;
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                menuItems[selectedIndex].style.transform = '';
+                selectedIndex = (selectedIndex + 1) % menuItems.length;
+                menuItems[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                simulateHover(selectedIndex);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                menuItems[selectedIndex].style.transform = '';
+                selectedIndex = (selectedIndex - 1 + menuItems.length) % menuItems.length;
+                menuItems[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                simulateHover(selectedIndex);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                menuItems[selectedIndex].click();
+            }
+        });
+        
+        function simulateHover(index) {
+            menuItems.forEach(item => {
+                item.style.background = '';
+                item.style.borderColor = '';
+                item.style.transform = '';
+            });
+            
+            menuItems[index].style.background = 'linear-gradient(to right, #2d2d5f 0%, #4a4a8f 50%, #2d2d5f 100%)';
+            menuItems[index].style.borderColor = '#ffeb3b';
+            menuItems[index].style.transform = 'translateY(-2px)';
+        }
+
+        // Initialize everything on load
+        window.addEventListener('load', () => {
+            initCharacterSprites();
+            showScreen('main-menu');
+            document.getElementById('main-menu').classList.add('active');
+        });
+    </script>
+</body>
+</html>
+
